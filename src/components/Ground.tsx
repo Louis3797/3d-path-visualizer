@@ -16,6 +16,7 @@ const Ground: React.FC = () => {
     for (let i = 0; i < boxes.length; i++) {
       const v: Vector3 = boxes[i];
       if (v.x === vector.x && v.z === vector.z) {
+        // Todo delete obstacles
         return;
       }
     }
@@ -38,7 +39,7 @@ const Ground: React.FC = () => {
         name="floor"
         onPointerMove={(e) => {
           ray.current.position.copy(
-            new Vector3(e.point.x, 0, e.point.z).floor()
+            new Vector3(e.point.x, 0, e.point.z).floor().addScalar(0.0001)
           );
         }}
       >
@@ -49,11 +50,11 @@ const Ground: React.FC = () => {
         />
       </Plane>
       {/* Mouse Pointer Plane */}
-      <mesh position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]} ref={ray}>
+      <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]} ref={ray}>
         <planeGeometry args={[1, 1, 1, 1]} />
         <meshBasicMaterial
           side={DoubleSide}
-          color="#ff0000ee"
+          color="#f0f0f0"
           attach="material"
         />
       </mesh>
