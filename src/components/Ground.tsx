@@ -38,7 +38,7 @@ const Ground: React.FC = () => {
         ref={ground}
         name="floor"
         onPointerMove={(e) => {
-          ray.current.position.copy(
+          ray.current?.position.copy(
             new Vector3(e.point.x, 0, e.point.z).floor().addScalar(0.0001)
           );
         }}
@@ -59,8 +59,8 @@ const Ground: React.FC = () => {
         />
       </mesh>
       {/* Obstacles */}
-      {boxes.map((o) => {
-        return <Obstacle position={new Vector3(o.x, 5, o.z)} />;
+      {boxes.map((o, idx) => {
+        return <Obstacle position={new Vector3(o.x, 5, o.z)} key={idx} />;
       })}
     </>
   );
