@@ -1,8 +1,10 @@
 import { Plane } from "@react-three/drei";
 import React, { useRef, useState } from "react";
 import { DoubleSide, Mesh, PlaneBufferGeometry, Vector3 } from "three";
+import Obstacle from "./Obstacle";
 
 const Ground: React.FC = () => {
+  const planeSize = 30;
   const ground = useRef<PlaneBufferGeometry>(null);
 
   const ray = useRef<Mesh>(null!);
@@ -14,6 +16,7 @@ const Ground: React.FC = () => {
     for (let i = 0; i < boxes.length; i++) {
       const v: Vector3 = boxes[i];
       if (v.x === vector.x && v.z === vector.z) {
+        // Todo delete obstacles
         return;
       }
     }
@@ -25,7 +28,7 @@ const Ground: React.FC = () => {
     <>
       {/* Ground Plane */}
       <Plane
-        args={[100, 100, 100, 100]}
+        args={[planeSize, planeSize, planeSize, planeSize]}
         position={[0, 0, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
         onClick={(e) => {
@@ -36,33 +39,28 @@ const Ground: React.FC = () => {
         name="floor"
         onPointerMove={(e) => {
           ray.current.position.copy(
-            new Vector3(e.point.x, 0, e.point.z).floor()
+            new Vector3(e.point.x, 0, e.point.z).floor().addScalar(0.0001)
           );
         }}
       >
         <meshBasicMaterial
           side={DoubleSide}
-          color="#00dd00"
+          color="#A2B5BB"
           attach="material"
         />
       </Plane>
       {/* Mouse Pointer Plane */}
-      <mesh position={[0, 0.5, 0]} rotation={[-Math.PI / 2, 0, 0]} ref={ray}>
+      <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]} ref={ray}>
         <planeGeometry args={[1, 1, 1, 1]} />
         <meshBasicMaterial
           side={DoubleSide}
-          color="#ff0000ee"
+          color="#f0f0f0"
           attach="material"
         />
       </mesh>
       {/* Obstacles */}
       {boxes.map((o) => {
-        return (
-          <mesh position={[o.x, 5, o.z]}>
-            <boxGeometry args={[1, 10, 1]} />
-            <meshBasicMaterial attach="material" color="#354411" />
-          </mesh>
-        );
+        return <Obstacle position={new Vector3(o.x, 5, o.z)} />;
       })}
     </>
   );
