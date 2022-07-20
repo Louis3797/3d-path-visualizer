@@ -24,10 +24,10 @@ const Ground: React.FC<GroundProps> = ({ floor, isDragging }) => {
 
   // add given vector to boxes, if its not already present
   const addBuilding = (vector: Vector3) => {
-    for (let i = 0; i < boxes.length; i++) {
+    for (let i = 0; i < boxes.length; ++i) {
       const v: Vector3 = boxes[i];
       if (v.x === vector.x && v.z === vector.z) {
-        // Todo delete obstacles
+        // setBoxes([...boxes.slice(0, i), ...boxes.slice(i + 1, boxes.length)]);
         return;
       }
     }
@@ -37,13 +37,14 @@ const Ground: React.FC<GroundProps> = ({ floor, isDragging }) => {
 
   return (
     <>
-      <gridHelper args={[31, 31]} />
+      <gridHelper args={[31, 31]} receiveShadow />
       {/* Ground Plane */}
       <Plane
         args={[planeSize, planeSize, planeSize, planeSize]}
         {...floor}
         position={[0, -0.001, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
+        receiveShadow
         onClick={(e) => {
           if (!isDragging) {
             const vector = new Vector3(
@@ -73,7 +74,7 @@ const Ground: React.FC<GroundProps> = ({ floor, isDragging }) => {
       {/* Mouse Pointer Plane */}
       <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]} ref={ray}>
         <planeGeometry args={[1, 1, 1, 1]} />
-        <meshBasicMaterial
+        <meshStandardMaterial
           side={DoubleSide}
           color="#f0f0f0"
           attach="material"
