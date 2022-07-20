@@ -194,13 +194,13 @@ const Obstacle: React.FC<ObstaclesProps> = ({ position }) => {
   );
 
   const ref = useRef<Mesh>(null!);
-  const [obstaclePosition, setobstaclePosition] = useState<Vector3>(position);
+  const [obstaclePosition, setObstaclePosition] = useState<Vector3>(position);
 
-  useFrame((state, delta) => {
+  useFrame((_state, _delta) => {
     if (ref.current.position.y > 0.01) {
       const newPos: Vector3 = ref.current.position;
       newPos.y -= 0.2;
-      setobstaclePosition(newPos);
+      setObstaclePosition(newPos);
     }
   });
 
