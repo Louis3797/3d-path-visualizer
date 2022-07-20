@@ -4,6 +4,7 @@ import { Canvas } from "react-three-fiber";
 
 import {
   ACESFilmicToneMapping,
+  BasicShadowMap,
   PCFSoftShadowMap,
   Plane,
   sRGBEncoding,
@@ -28,7 +29,7 @@ function App() {
       }}
     >
       <Canvas
-        shadows
+        shadows={{ type: BasicShadowMap }}
         camera={{ fov: 75, near: 1, far: 500, position: [5, 2, 5] }}
         onCreated={({ gl }) => {
           gl.setPixelRatio(window.devicePixelRatio);
@@ -42,21 +43,22 @@ function App() {
         <Sky />
         <OrbitControls enabled={!isDragging} />
 
-        <ambientLight intensity={1.5} castShadow color="#ffffff" />
+        <ambientLight intensity={0.5} castShadow color="#ffffff" />
         <directionalLight
-          position={[50, 20, 50]}
+          position={[50, 50, 50]}
           castShadow
-          intensity={0.7}
-          shadow-mapSize-width={4096}
-          shadow-mapSize-height={4096}
-          shadow-camera-far={500}
-          shadow-camera-near={0.5}
+          intensity={1.5}
+          shadow-mapSize-width={512}
+          shadow-mapSize-height={512}
+          shadow-camera-far={50}
+          shadow-camera-near={0.1}
           shadow-camera-left={50}
           shadow-camera-right={-50}
           shadow-camera-top={50}
           shadow-camera-bottom={-50}
-          color="#0CECDD"
+          color="##AAC1D4"
         />
+
         <Suspense fallback={null}>
           <Character
             floor={floor}
