@@ -1,10 +1,21 @@
 import { Plane } from "@react-three/drei";
 import React, { useRef, useState } from "react";
-import { DoubleSide, Mesh, PlaneBufferGeometry, Vector3 } from "three";
+import {
+  DoubleSide,
+  Mesh,
+  Plane as ThreePlane,
+  PlaneBufferGeometry,
+  Vector3,
+} from "three";
 import Obstacle from "./Obstacle";
 
-const Ground: React.FC = () => {
-  const planeSize = 30;
+interface GroundProps {
+  floor: ThreePlane;
+  isDragging: boolean;
+}
+
+const Ground: React.FC<GroundProps> = ({ floor, isDragging }) => {
+  const planeSize = 31;
   const ground = useRef<PlaneBufferGeometry>(null);
 
   const ray = useRef<Mesh>(null!);
@@ -12,7 +23,7 @@ const Ground: React.FC = () => {
   const [boxes, setBoxes] = useState<Vector3[]>([]);
 
   // add given vector to boxes, if its not already present
-  const addbox = (vector: Vector3) => {
+  const addBuilding = (vector: Vector3) => {
     for (let i = 0; i < boxes.length; i++) {
       const v: Vector3 = boxes[i];
       if (v.x === vector.x && v.z === vector.z) {
@@ -26,20 +37,30 @@ const Ground: React.FC = () => {
 
   return (
     <>
+      <gridHelper args={[31, 31]} />
       {/* Ground Plane */}
       <Plane
         args={[planeSize, planeSize, planeSize, planeSize]}
-        position={[0, 0, 0]}
+        {...floor}
+        position={[0, -0.001, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
         onClick={(e) => {
-          const vector = new Vector3(e.point.x, 0, e.point.z).floor();
-          addbox(vector);
+          if (!isDragging) {
+            const vector = new Vector3(
+              Math.round(e.point.x),
+              0,
+              Math.round(e.point.z)
+            ).floor();
+            addBuilding(vector);
+          }
         }}
         ref={ground}
         name="floor"
         onPointerMove={(e) => {
           ray.current?.position.copy(
-            new Vector3(e.point.x, 0, e.point.z).floor().addScalar(0.0001)
+            new Vector3(Math.round(e.point.x), 0, Math.round(e.point.z))
+              .floor()
+              .addScalar(0.0001)
           );
         }}
       >
