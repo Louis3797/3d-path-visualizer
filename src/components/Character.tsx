@@ -1,16 +1,27 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFrame, useLoader } from "react-three-fiber";
-import { AnimationMixer, Mesh, Vector3 } from "three";
+import { AnimationMixer, Mesh, Plane, Vector3 } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 
-interface Animations {
-  [name: string]: {
-    clip: THREE.AnimationAction;
-  };
+import { Animations } from "../types";
+
+interface CharacterProps {
+  floor: Plane;
+  isDragging: boolean;
+  setDragging: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Character: React.FC = () => {
+const Character: React.FC<CharacterProps> = ({
+  floor,
+  isDragging,
+  setDragging,
+}) => {
   const ref = useRef<Mesh>(null!);
+  const [characterPosition, setCharacterPosition] = useState<Vector3>(
+    new Vector3(0, 0, 0)
+  );
+
+  let pointer = new Vector3();
 
   const animations: Animations = {};
 
@@ -39,15 +50,33 @@ const Character: React.FC = () => {
   let currentAnimation = animations["idle"].clip;
 
   useFrame((state, delta) => {
+    if (isDragging) {
+      const newPos = state.raycaster.ray.intersectPlane(floor, pointer);
+      if (newPos) {
+        newPos.floor();
+        newPos.setY(0);
+        ref.current.position.copy(newPos).floor();
+        setCharacterPosition(newPos);
+      }
+    }
     mixer.update(delta);
   });
 
   useEffect(() => {
     currentAnimation.play();
+
+    return () => {};
   });
 
   return (
-    <primitive ref={ref} position={new Vector3(0, 0, 0)} object={character} />
+    <mesh
+      onClick={() => {
+        console.info("on");
+        setDragging(true);
+      }}
+    >
+      <primitive ref={ref} position={characterPosition} object={character} />
+    </mesh>
   );
 };
 
