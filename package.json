@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-spring/three": "^9.5.2",
     "@react-three/drei": "^9.13.0",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
@@ -15,9 +16,11 @@
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
     "react-scripts": "5.0.1",
+    "react-spring": "^9.5.2",
     "react-three-fiber": "^6.0.13",
     "three": "^0.141.0",
     "typescript": "^4.4.2",
+    "uuid": "^8.3.2",
     "web-vitals": "^2.1.0"
   },
   "scripts": {
@@ -45,6 +48,7 @@
     ]
   },
   "devDependencies": {
-    "@types/three": "^0.141.0"
+    "@types/three": "^0.141.0",
+    "@types/uuid": "^8.3.4"
   }
 }
