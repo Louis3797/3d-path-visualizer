@@ -1,4 +1,4 @@
-import { OrbitControls, Sky } from "@react-three/drei";
+import { OrbitControls, Sky, softShadows } from "@react-three/drei";
 import { Suspense, useState } from "react";
 import { Canvas } from "react-three-fiber";
 
@@ -10,6 +10,7 @@ import {
 } from "three";
 import Ground from "./components/Ground";
 
+softShadows();
 function App() {
   const [isDragging, setIsDragging] = useState<boolean>(false);
   return (
@@ -23,7 +24,7 @@ function App() {
     >
       <Canvas
         shadows={{ type: BasicShadowMap }}
-        camera={{ fov: 75, near: 1, far: 500, position: [5, 2, 5] }}
+        camera={{ fov: 75, near: 0.5, far: 500, position: [5, 2, 5] }}
         onCreated={({ gl }) => {
           gl.setPixelRatio(window.devicePixelRatio);
           gl.outputEncoding = sRGBEncoding;
@@ -36,19 +37,20 @@ function App() {
         <Sky />
         <OrbitControls enabled={!isDragging} />
 
-        <ambientLight intensity={0.5} castShadow color="#ffffff" />
+        <ambientLight intensity={0.4} castShadow color="#ffffff" />
         <directionalLight
-          position={[50, 30, 50]}
+          position={[15, 20, 15]}
           castShadow
-          intensity={1.5}
-          shadow-mapSize-width={512}
-          shadow-mapSize-height={512}
+          intensity={1}
+          shadow-mapSize-width={1024}
+          shadow-mapSize-height={1024}
           shadow-camera-far={50}
-          shadow-camera-near={0.1}
-          shadow-camera-left={20}
-          shadow-camera-right={-20}
-          shadow-camera-top={20}
-          shadow-camera-bottom={-20}
+          shadow-camera-near={0.5}
+          shadow-camera-left={-30}
+          shadow-camera-right={30}
+          shadow-camera-top={30}
+          shadow-camera-bottom={-30}
+          shadow-bias={-0.001}
           color="#ffffff"
         />
 
