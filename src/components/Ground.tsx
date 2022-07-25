@@ -13,6 +13,7 @@ import { initializeGrid } from "../utils/InitalizeGrid";
 import { Node } from "../utils/Node";
 import Character from "./Character";
 import Obstacle from "./Obstacle";
+import Target from "./Target";
 
 interface GroundProps {
   isDragging: boolean;
@@ -21,7 +22,6 @@ interface GroundProps {
 
 const Ground: React.FC<GroundProps> = ({ isDragging, setDragging }) => {
   const floor: ThreePlane = new ThreePlane(new Vector3(0, -0.001, 0), 0);
-  // const { mouse, camera, scene } = useThree();
 
   const planeSize = 31;
 
@@ -61,6 +61,8 @@ const Ground: React.FC<GroundProps> = ({ isDragging, setDragging }) => {
         position={[0, -0.001, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
         receiveShadow
+        ref={ground}
+        name="floor"
         onClick={(e) => {
           if (e.intersections[0].object.name === "floor") {
             if (!isDragging) {
@@ -68,8 +70,6 @@ const Ground: React.FC<GroundProps> = ({ isDragging, setDragging }) => {
             }
           }
         }}
-        ref={ground}
-        name="floor"
         onPointerMove={(e) => {
           ray.current?.position.copy(
             new Vector3(Math.round(e.point.x), 0, Math.round(e.point.z))
@@ -78,7 +78,7 @@ const Ground: React.FC<GroundProps> = ({ isDragging, setDragging }) => {
           );
         }}
       >
-        <meshBasicMaterial
+        <meshStandardMaterial
           side={DoubleSide}
           color="#A2B5BB"
           attach="material"
@@ -111,6 +111,13 @@ const Ground: React.FC<GroundProps> = ({ isDragging, setDragging }) => {
       </group>
       {/* Character */}
       <Character
+        floor={floor}
+        graph={graph}
+        setGraph={setGraph}
+        setDragging={setDragging}
+      />
+      {/* Target */}
+      <Target
         floor={floor}
         graph={graph}
         setGraph={setGraph}
