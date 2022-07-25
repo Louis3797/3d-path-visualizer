@@ -1,6 +1,5 @@
 import { Plane } from "@react-three/drei";
 import React, { useRef, useState } from "react";
-import { useFrame } from "react-three-fiber";
 import {
   DoubleSide,
   Mesh,
@@ -8,6 +7,7 @@ import {
   PlaneBufferGeometry,
   Vector3,
 } from "three";
+import { getGraphIndexes } from "../utils/getGraphIndexes";
 import { initializeGrid } from "../utils/InitalizeGrid";
 
 import { Node } from "../utils/Node";
@@ -38,9 +38,7 @@ const Ground: React.FC<GroundProps> = ({ isDragging, setDragging }) => {
    * @param vector Specified position
    */
   const addBuilding = (vector: Vector3) => {
-    // We calculate + 15 because some coordinates are in the minus range
-    const i = Math.round(vector.x) + 15;
-    const j = Math.round(vector.z) + 15;
+    const [i, j] = getGraphIndexes(vector);
 
     const tempGraph = [...graph]; // Copies old graph
 

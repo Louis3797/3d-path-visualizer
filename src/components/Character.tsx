@@ -7,6 +7,7 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 
 import { Animations } from "../types";
 import { Node } from "../utils/Node";
+import { getGraphIndexes } from "../utils/getGraphIndexes";
 
 interface CharacterProps {
   floor: Plane;
@@ -54,8 +55,7 @@ const Character: React.FC<CharacterProps> = ({
   let currentAnimation = animations["idle"].clip;
 
   const setNewStartPosition = (vector: Vector3) => {
-    const i = Math.round(vector.x) + 15;
-    const j = Math.round(vector.z) + 15;
+    const [i, j] = getGraphIndexes(vector);
 
     const tempGraph = [...graph];
 
@@ -83,7 +83,7 @@ const Character: React.FC<CharacterProps> = ({
   });
 
   const [spring, api] = useSpring(() => ({
-    position: [0, 0, 0],
+    position: [-10, 0, -10],
   }));
 
   const bind = useGesture({
@@ -104,6 +104,8 @@ const Character: React.FC<CharacterProps> = ({
   });
 
   useEffect(() => {
+    const [i, j] = getGraphIndexes(ref.current.position);
+    graph[i][j].isStart = true;
     currentAnimation.play();
   });
 
