@@ -1,29 +1,34 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useFrame, useLoader } from "react-three-fiber";
+import { useGesture } from "@use-gesture/react";
+import React, { useEffect, useRef } from "react";
+import { a, useSpring } from "@react-spring/three";
+import { useFrame, useLoader, useThree } from "react-three-fiber";
 import { AnimationMixer, Mesh, Plane, Vector3 } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 
 import { Animations } from "../types";
+import { Node } from "../utils/Node";
+import { getGraphIndexes } from "../utils/getGraphIndexes";
 
 interface CharacterProps {
   floor: Plane;
-  isDragging: boolean;
+  graph: Node[][];
+  setGraph: React.Dispatch<React.SetStateAction<Node[][]>>;
   setDragging: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Character: React.FC<CharacterProps> = ({
   floor,
-  isDragging,
+  graph,
+  setGraph,
   setDragging,
 }) => {
   const ref = useRef<Mesh>(null!);
-  const [characterPosition, setCharacterPosition] = useState<Vector3>(
-    new Vector3(0, 0, 0)
-  );
 
   let pointer = new Vector3();
 
   const animations: Animations = {};
+
+  const { raycaster } = useThree();
 
   const [character, idle_animation, walk_animation] = useLoader(FBXLoader, [
     "./models/character/character.fbx",
@@ -49,34 +54,65 @@ const Character: React.FC<CharacterProps> = ({
 
   let currentAnimation = animations["idle"].clip;
 
-  useFrame((state, delta) => {
-    if (isDragging) {
-      const newPos = state.raycaster.ray.intersectPlane(floor, pointer);
-      if (newPos) {
-        newPos.floor();
-        newPos.setY(0);
-        ref.current.position.copy(newPos).floor();
-        setCharacterPosition(newPos);
-      }
+  const setNewStartPosition = (vector: Vector3) => {
+    const [i, j] = getGraphIndexes(vector);
+
+    const tempGraph = [...graph];
+
+    const newStartNode: Node = tempGraph[i][j];
+
+    // Todo What if its the finish node
+    if (!newStartNode.isFinish) {
+      newStartNode.isWall = false;
+      newStartNode.isStart = true;
     }
+
+    setGraph(tempGraph);
+
+    graph.forEach((na) => {
+      na.forEach((n) => {
+        if (n.isStart && n !== newStartNode) {
+          n.isStart = false;
+        }
+      });
+    });
+  };
+
+  useFrame((_, delta) => {
     mixer.update(delta);
   });
 
-  useEffect(() => {
-    currentAnimation.play();
+  const [spring, api] = useSpring(() => ({
+    position: [-10, 0, -10],
+  }));
 
-    return () => {};
+  const bind = useGesture({
+    onDrag: () => {
+      const newPos = raycaster.ray.intersectPlane(floor, pointer);
+      if (newPos) {
+        newPos.addScalar(0.5).floor();
+        return api.start({ position: [newPos.x, 0, newPos.z] });
+      }
+    },
+    onDragStart: () => {
+      setDragging(true);
+    },
+    onDragEnd: () => {
+      setDragging(false);
+      setNewStartPosition(ref.current.position);
+    },
+  });
+
+  useEffect(() => {
+    const [i, j] = getGraphIndexes(ref.current.position);
+    graph[i][j].isStart = true;
+    currentAnimation.play();
   });
 
   return (
-    <mesh
-      onClick={() => {
-        console.info("on");
-        setDragging(true);
-      }}
-    >
-      <primitive ref={ref} position={characterPosition} object={character} />
-    </mesh>
+    <a.mesh {...spring} {...(bind() as any)} ref={ref}>
+      <primitive name="start" object={character} />
+    </a.mesh>
   );
 };
 

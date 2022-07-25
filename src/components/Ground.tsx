@@ -7,37 +7,53 @@ import {
   PlaneBufferGeometry,
   Vector3,
 } from "three";
+import { getGraphIndexes } from "../utils/getGraphIndexes";
+import { initializeGrid } from "../utils/InitalizeGrid";
+
+import { Node } from "../utils/Node";
+import Character from "./Character";
 import Obstacle from "./Obstacle";
 
 interface GroundProps {
-  floor: ThreePlane;
   isDragging: boolean;
+  setDragging: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Ground: React.FC<GroundProps> = ({ floor, isDragging }) => {
-  const planeSize = 31;
-  const ground = useRef<PlaneBufferGeometry>(null);
+const Ground: React.FC<GroundProps> = ({ isDragging, setDragging }) => {
+  const floor: ThreePlane = new ThreePlane(new Vector3(0, -0.001, 0), 0);
+  // const { mouse, camera, scene } = useThree();
 
+  const planeSize = 31;
+
+  const [graph, setGraph] = useState<Node[][]>(initializeGrid(planeSize));
+
+  const ground = useRef<PlaneBufferGeometry>(null!);
   const ray = useRef<Mesh>(null!);
 
-  const [boxes, setBoxes] = useState<Vector3[]>([]);
-
-  // add given vector to boxes, if its not already present
+  /**
+   * Checks if an obstacle can be added at the given position.
+   * If there is already an obstacle at the position,
+   * it will be removed.
+   *
+   * @param vector Specified position
+   */
   const addBuilding = (vector: Vector3) => {
-    for (let i = 0; i < boxes.length; ++i) {
-      const v: Vector3 = boxes[i];
-      if (v.x === vector.x && v.z === vector.z) {
-        // setBoxes([...boxes.slice(0, i), ...boxes.slice(i + 1, boxes.length)]);
-        return;
-      }
-    }
+    const [i, j] = getGraphIndexes(vector);
 
-    setBoxes((v) => [...v, vector]);
+    const tempGraph = [...graph]; // Copies old graph
+
+    const newNode = tempGraph[i][j];
+
+    if (!newNode.isFinish && !newNode.isStart) {
+      newNode.isWall = !newNode.isWall; // Add or remove wall
+    }
+    setGraph(tempGraph); // We set a new graph every time, because otherwise we don't re-render
   };
 
   return (
     <>
-      <gridHelper args={[31, 31]} receiveShadow />
+      {/* Grid Helper */}
+      <gridHelper args={[planeSize, planeSize]} receiveShadow />
       {/* Ground Plane */}
       <Plane
         args={[planeSize, planeSize, planeSize, planeSize]}
@@ -46,13 +62,10 @@ const Ground: React.FC<GroundProps> = ({ floor, isDragging }) => {
         rotation={[-Math.PI / 2, 0, 0]}
         receiveShadow
         onClick={(e) => {
-          if (!isDragging) {
-            const vector = new Vector3(
-              Math.round(e.point.x),
-              0,
-              Math.round(e.point.z)
-            ).floor();
-            addBuilding(vector);
+          if (e.intersections[0].object.name === "floor") {
+            if (!isDragging) {
+              addBuilding(e.point);
+            }
           }
         }}
         ref={ground}
@@ -81,9 +94,28 @@ const Ground: React.FC<GroundProps> = ({ floor, isDragging }) => {
         />
       </mesh>
       {/* Obstacles */}
-      {boxes.map((o, idx) => {
-        return <Obstacle position={new Vector3(o.x, 5, o.z)} key={idx} />;
-      })}
+      <group>
+        {graph.map((obstacles) => {
+          return obstacles.map((obstacle, idx) => {
+            if (obstacle.isWall) {
+              return (
+                <Obstacle
+                  position={new Vector3(obstacle.x - 15, 5, obstacle.z - 15)}
+                  key={idx}
+                />
+              );
+            }
+            return null;
+          });
+        })}
+      </group>
+      {/* Character */}
+      <Character
+        floor={floor}
+        graph={graph}
+        setGraph={setGraph}
+        setDragging={setDragging}
+      />
     </>
   );
 };

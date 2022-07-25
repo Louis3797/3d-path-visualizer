@@ -204,7 +204,16 @@ const Obstacle: React.FC<ObstaclesProps> = ({ position }) => {
     }
   });
 
-  return <primitive ref={ref} position={obstaclePosition} object={obstacle} />;
+  return (
+    <mesh castShadow receiveShadow>
+      <primitive
+        ref={ref}
+        position={obstaclePosition}
+        object={obstacle}
+        name="obstacle"
+      />
+    </mesh>
+  );
 };
 
 export default Obstacle;
