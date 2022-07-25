@@ -1,6 +1,6 @@
 import { useGesture } from "@use-gesture/react";
 import React, { useEffect, useRef } from "react";
-import { a, useSpring } from "@react-spring/three";
+import { animated, useSpring } from "@react-spring/three";
 import { useFrame, useLoader, useThree } from "react-three-fiber";
 import { AnimationMixer, Mesh, Plane, Vector3 } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
@@ -110,9 +110,9 @@ const Character: React.FC<CharacterProps> = ({
   });
 
   return (
-    <a.mesh {...spring} {...(bind() as any)} ref={ref}>
+    <animated.mesh {...spring} {...(bind() as any)} ref={ref}>
       <primitive name="start" object={character} />
-    </a.mesh>
+    </animated.mesh>
   );
 };
 
