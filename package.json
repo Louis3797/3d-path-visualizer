@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@mui/material": "^5.9.2",
     "@react-spring/three": "^9.5.2",
     "@react-three/drei": "^9.13.0",
     "@testing-library/jest-dom": "^5.14.1",
@@ -50,6 +53,9 @@
   },
   "devDependencies": {
     "@types/three": "^0.141.0",
-    "@types/uuid": "^8.3.4"
+    "@types/uuid": "^8.3.4",
+    "autoprefixer": "^10.4.7",
+    "postcss": "^8.4.14",
+    "tailwindcss": "^3.1.6"
   }
 }
