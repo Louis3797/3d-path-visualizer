@@ -4,7 +4,7 @@ import DropDownButton from "./DropDownButton";
 
 const Navbar: React.FC = () => {
   const config: Record<
-    string,
+    "algorithms" | "speed",
     { name: string | number; value: string | number }[]
   > = {
     algorithms: [
