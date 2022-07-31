@@ -15,3 +15,14 @@ export type NodeProps = {
   distance?: number;
   prevNode?: Node | null;
 };
+
+export type GlobalState = {
+  algorithm: string;
+  setAlgorithm: (newAlgorithm: string) => void;
+  speed: number;
+  setSpeed: (newSpeed: number) => void;
+  grid: Node[][];
+  setGrid: (newGrid: Node[][]) => void;
+  isDragging: boolean;
+  setDragging: (drag: boolean) => void;
+};
