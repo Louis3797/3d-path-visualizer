@@ -1,12 +1,27 @@
 import { Button, SelectChangeEvent } from "@mui/material";
-import React, { useState } from "react";
+import React from "react";
+import { useGlobalStore } from "../../global-stores/useGlobalStore";
 import DropDownButton from "./DropDownButton";
 
 const Navbar: React.FC = () => {
-  const config: Record<
-    "algorithms" | "speed",
-    { name: string | number; value: string | number }[]
-  > = {
+  const { algorithm, speed, setAlgorithm, setSpeed } = useGlobalStore(
+    (state) => ({
+      algorithm: state.algorithm,
+      speed: state.speed,
+      setAlgorithm: state.setAlgorithm,
+      setSpeed: state.setSpeed,
+    })
+  );
+  const config: {
+    algorithms: {
+      name: string;
+      value: string;
+    }[];
+    speed: {
+      name: string;
+      value: number;
+    }[];
+  } = {
     algorithms: [
       {
         name: "Breath First Search",
@@ -40,27 +55,25 @@ const Navbar: React.FC = () => {
       },
     ],
   };
-  const [currentAlgorithm, setCurrentAlgorithm] = useState("");
-  const [currentSpeed, setCurrentSpeed] = useState("");
 
   const handleAlgorithmChange = (event: SelectChangeEvent) => {
-    setCurrentAlgorithm(event.target.value);
+    setAlgorithm(event.target.value);
   };
   const handleSpeedChange = (event: SelectChangeEvent) => {
-    setCurrentSpeed(event.target.value);
+    setSpeed(event.target.value);
   };
 
   return (
     <div className="absolute flex flex-row top-0 bg-transparent w-screen h-10 items-center space-x-4 py-3 px-4">
       <p className="text-xl select-none font-medium">3D Path Visualizer</p>
       <DropDownButton
-        value={currentAlgorithm}
+        value={algorithm}
         label="Algorithms"
         onChange={handleAlgorithmChange}
         data={config.algorithms}
       />
       <DropDownButton
-        value={currentSpeed}
+        value={speed}
         label="Speed"
         onChange={handleSpeedChange}
         data={config.speed}
@@ -68,9 +81,9 @@ const Navbar: React.FC = () => {
       <Button
         variant="contained"
         size="small"
-        disabled={currentAlgorithm.length === 0}
+        disabled={algorithm.length === 0}
       >
-        Visualize {currentAlgorithm}!
+        Visualize {algorithm}!
       </Button>
       <Button variant="contained" size="small" disabled={false}>
         Clear Board
