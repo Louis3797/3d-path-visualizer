@@ -19,8 +19,8 @@ export type NodeProps = {
 export type GlobalState = {
   algorithm: string;
   setAlgorithm: (newAlgorithm: string) => void;
-  speed: number;
-  setSpeed: (newSpeed: number) => void;
+  speed: string;
+  setSpeed: (newSpeed: string) => void;
   grid: Node[][];
   setGrid: (newGrid: Node[][]) => void;
   isDragging: boolean;
