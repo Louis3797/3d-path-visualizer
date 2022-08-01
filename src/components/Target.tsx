@@ -6,20 +6,18 @@ import { Mesh, Plane, Vector3 } from "three";
 import { Node } from "../utils/Node";
 import { getGraphIndexes } from "../utils/getGraphIndexes";
 import RedFlag from "./generated/RedFlag";
+import { useGlobalStore } from "../global-stores/useGlobalStore";
 
 interface TargetProps {
   floor: Plane;
-  graph: Node[][];
-  setGraph: React.Dispatch<React.SetStateAction<Node[][]>>;
-  setDragging: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Target: React.FC<TargetProps> = ({
-  floor,
-  graph,
-  setGraph,
-  setDragging,
-}) => {
+const Target: React.FC<TargetProps> = ({ floor }) => {
+  const { grid, setGrid, setDragging } = useGlobalStore((state) => ({
+    grid: state.grid,
+    setGrid: state.setGrid,
+    setDragging: state.setDragging,
+  }));
   const ref = useRef<Mesh>(null!);
 
   let pointer = new Vector3();
@@ -29,7 +27,7 @@ const Target: React.FC<TargetProps> = ({
   const setNewTargetPosition = (vector: Vector3) => {
     const [i, j] = getGraphIndexes(vector);
 
-    const tempGraph = [...graph];
+    const tempGraph = [...grid];
 
     const newTargetNode: Node = tempGraph[i][j];
 
@@ -39,9 +37,9 @@ const Target: React.FC<TargetProps> = ({
       newTargetNode.isFinish = true;
     }
 
-    setGraph(tempGraph);
+    setGrid(tempGraph);
 
-    graph.forEach((na) => {
+    grid.forEach((na) => {
       na.forEach((n) => {
         if (n.isFinish && n !== newTargetNode) {
           n.isFinish = false;
@@ -73,7 +71,7 @@ const Target: React.FC<TargetProps> = ({
 
   useEffect(() => {
     const [i, j] = getGraphIndexes(ref.current.position);
-    graph[i][j].isFinish = true;
+    grid[i][j].isFinish = true;
   });
 
   return (

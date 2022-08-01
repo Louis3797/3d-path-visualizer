@@ -4,7 +4,7 @@ import {
   ThemeProvider,
 } from "@mui/material";
 import { OrbitControls, Sky, softShadows } from "@react-three/drei";
-import { Suspense, useState } from "react";
+import { Suspense } from "react";
 import { Canvas } from "react-three-fiber";
 
 import {
@@ -15,11 +15,14 @@ import {
 } from "three";
 import Ground from "./components/Ground";
 import Navbar from "./components/ui/Navbar";
+import { useGlobalStore } from "./global-stores/useGlobalStore";
 
 softShadows();
 function App() {
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-
+  const { isDragging, setDragging } = useGlobalStore((state) => ({
+    isDragging: state.isDragging,
+    setDragging: state.setDragging,
+  }));
   const theme = createTheme({
     palette: {
       mode: "light",
@@ -34,7 +37,7 @@ function App() {
             className="w-screen h-screen"
             onDoubleClick={() => {
               if (isDragging === true) {
-                setIsDragging(false);
+                setDragging(false);
               }
             }}
           >
@@ -69,7 +72,7 @@ function App() {
                 color="#ffffff"
               />
               <Suspense fallback={null}>
-                <Ground isDragging={isDragging} setDragging={setIsDragging} />
+                <Ground />
               </Suspense>
             </Canvas>
             <Navbar />

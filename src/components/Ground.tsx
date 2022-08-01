@@ -1,5 +1,5 @@
 import { Plane } from "@react-three/drei";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   DoubleSide,
   Mesh,
@@ -7,25 +7,22 @@ import {
   PlaneBufferGeometry,
   Vector3,
 } from "three";
+import { useGlobalStore } from "../global-stores/useGlobalStore";
 import { getGraphIndexes } from "../utils/getGraphIndexes";
 import { initializeGrid } from "../utils/InitalizeGrid";
 
-import { Node } from "../utils/Node";
 import Character from "./Character";
 import Obstacle from "./Obstacle";
 import Target from "./Target";
 
-interface GroundProps {
-  isDragging: boolean;
-  setDragging: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const Ground: React.FC<GroundProps> = ({ isDragging, setDragging }) => {
+const Ground: React.FC = () => {
   const floor: ThreePlane = new ThreePlane(new Vector3(0, -0.001, 0), 0);
-
   const planeSize = 31;
-
-  const [graph, setGraph] = useState<Node[][]>(initializeGrid(planeSize));
+  const { grid, setGrid, isDragging } = useGlobalStore((state) => ({
+    grid: state.grid,
+    setGrid: state.setGrid,
+    isDragging: state.isDragging,
+  }));
 
   const ground = useRef<PlaneBufferGeometry>(null!);
   const ray = useRef<Mesh>(null!);
@@ -40,15 +37,19 @@ const Ground: React.FC<GroundProps> = ({ isDragging, setDragging }) => {
   const addBuilding = (vector: Vector3) => {
     const [i, j] = getGraphIndexes(vector);
 
-    const tempGraph = [...graph]; // Copies old graph
+    const tempGraph = [...grid]; // Copies old graph
 
     const newNode = tempGraph[i][j];
 
     if (!newNode.isFinish && !newNode.isStart) {
       newNode.isWall = !newNode.isWall; // Add or remove wall
     }
-    setGraph(tempGraph); // We set a new graph every time, because otherwise we don't re-render
+    setGrid(tempGraph); // We set a new graph every time, because otherwise we don't re-render
   };
+
+  useEffect(() => {
+    setGrid(initializeGrid(planeSize));
+  }, []);
 
   return (
     <>
@@ -95,7 +96,7 @@ const Ground: React.FC<GroundProps> = ({ isDragging, setDragging }) => {
       </mesh>
       {/* Obstacles */}
       <group>
-        {graph.map((obstacles) => {
+        {grid.map((obstacles) => {
           return obstacles.map((obstacle, idx) => {
             if (obstacle.isWall) {
               return (
@@ -110,19 +111,9 @@ const Ground: React.FC<GroundProps> = ({ isDragging, setDragging }) => {
         })}
       </group>
       {/* Character */}
-      <Character
-        floor={floor}
-        graph={graph}
-        setGraph={setGraph}
-        setDragging={setDragging}
-      />
+      <Character floor={floor} />
       {/* Target */}
-      <Target
-        floor={floor}
-        graph={graph}
-        setGraph={setGraph}
-        setDragging={setDragging}
-      />
+      <Target floor={floor} />
     </>
   );
 };

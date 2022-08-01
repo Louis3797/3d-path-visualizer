@@ -8,20 +8,18 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { Animations } from "../types";
 import { Node } from "../utils/Node";
 import { getGraphIndexes } from "../utils/getGraphIndexes";
+import { useGlobalStore } from "../global-stores/useGlobalStore";
 
 interface CharacterProps {
   floor: Plane;
-  graph: Node[][];
-  setGraph: React.Dispatch<React.SetStateAction<Node[][]>>;
-  setDragging: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Character: React.FC<CharacterProps> = ({
-  floor,
-  graph,
-  setGraph,
-  setDragging,
-}) => {
+const Character: React.FC<CharacterProps> = ({ floor }) => {
+  const { grid, setGrid, setDragging } = useGlobalStore((state) => ({
+    grid: state.grid,
+    setGrid: state.setGrid,
+    setDragging: state.setDragging,
+  }));
   const ref = useRef<Mesh>(null!);
 
   let pointer = new Vector3();
@@ -57,7 +55,7 @@ const Character: React.FC<CharacterProps> = ({
   const setNewStartPosition = (vector: Vector3) => {
     const [i, j] = getGraphIndexes(vector);
 
-    const tempGraph = [...graph];
+    const tempGraph = [...grid];
 
     const newStartNode: Node = tempGraph[i][j];
 
@@ -67,9 +65,9 @@ const Character: React.FC<CharacterProps> = ({
       newStartNode.isStart = true;
     }
 
-    setGraph(tempGraph);
+    setGrid(tempGraph);
 
-    graph.forEach((na) => {
+    grid.forEach((na) => {
       na.forEach((n) => {
         if (n.isStart && n !== newStartNode) {
           n.isStart = false;
@@ -105,7 +103,7 @@ const Character: React.FC<CharacterProps> = ({
 
   useEffect(() => {
     const [i, j] = getGraphIndexes(ref.current.position);
-    graph[i][j].isStart = true;
+    grid[i][j].isStart = true;
     currentAnimation.play();
   });
 
