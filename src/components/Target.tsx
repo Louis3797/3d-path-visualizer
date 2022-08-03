@@ -41,7 +41,7 @@ const Target: React.FC<TargetProps> = ({ floor }) => {
 
     grid.forEach((na) => {
       na.forEach((n) => {
-        if (n.isFinish && n !== newTargetNode) {
+        if (n.isFinish && n.x !== newTargetNode.x && n.z !== newTargetNode.z) {
           n.isFinish = false;
         }
       });

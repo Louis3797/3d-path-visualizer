@@ -69,7 +69,7 @@ const Character: React.FC<CharacterProps> = ({ floor }) => {
 
     grid.forEach((na) => {
       na.forEach((n) => {
-        if (n.isStart && n !== newStartNode) {
+        if (n.isStart && n.x !== newStartNode.x && n.z !== newStartNode.z) {
           n.isStart = false;
         }
       });
