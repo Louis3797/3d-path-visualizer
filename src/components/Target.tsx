@@ -37,15 +37,15 @@ const Target: React.FC<TargetProps> = ({ floor }) => {
       newTargetNode.isFinish = true;
     }
 
-    setGrid(tempGraph);
-
-    grid.forEach((na) => {
+    tempGraph.forEach((na) => {
       na.forEach((n) => {
         if (n.isFinish && n.x !== newTargetNode.x && n.z !== newTargetNode.z) {
           n.isFinish = false;
         }
       });
     });
+
+    setGrid(tempGraph);
   };
 
   const [spring, api] = useSpring(() => ({

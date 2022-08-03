@@ -65,15 +65,15 @@ const Character: React.FC<CharacterProps> = ({ floor }) => {
       newStartNode.isStart = true;
     }
 
-    setGrid(tempGraph);
-
-    grid.forEach((na) => {
+    tempGraph.forEach((na) => {
       na.forEach((n) => {
         if (n.isStart && n.x !== newStartNode.x && n.z !== newStartNode.z) {
           n.isStart = false;
         }
       });
     });
+
+    setGrid(tempGraph);
   };
 
   useFrame((_, delta) => {
