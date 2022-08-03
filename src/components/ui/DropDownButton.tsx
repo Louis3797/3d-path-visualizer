@@ -27,7 +27,11 @@ const DropDownButton: React.FC<DropDownButtonProps> = ({
       <InputLabel>{label}</InputLabel>
       <Select value={value} label={label} onChange={onChange}>
         {data.map((value, _) => {
-          return <MenuItem value={value.value}>{value.name}</MenuItem>;
+          return (
+            <MenuItem value={value.value} key={value.name}>
+              {value.name}
+            </MenuItem>
+          );
         })}
       </Select>
     </FormControl>
