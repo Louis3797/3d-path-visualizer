@@ -1,5 +1,5 @@
 import { Plane } from "@react-three/drei";
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import {
   DoubleSide,
   Mesh,
@@ -9,7 +9,6 @@ import {
 } from "three";
 import { useGlobalStore } from "../global-stores/useGlobalStore";
 import { getGraphIndexes } from "../utils/getGraphIndexes";
-import { initializeGrid } from "../utils/InitalizeGrid";
 
 import Character from "./Character";
 import Obstacle from "./Obstacle";
@@ -46,10 +45,6 @@ const Ground: React.FC = () => {
     }
     setGrid(tempGraph); // We set a new graph every time, because otherwise we don't re-render
   };
-
-  useEffect(() => {
-    setGrid(initializeGrid(planeSize));
-  }, []);
 
   return (
     <>
