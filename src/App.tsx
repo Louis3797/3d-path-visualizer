@@ -4,8 +4,8 @@ import {
   ThemeProvider,
 } from "@mui/material";
 import { OrbitControls, Sky, softShadows } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
-import { Canvas } from "react-three-fiber";
 
 import {
   ACESFilmicToneMapping,

@@ -1,12 +1,13 @@
 import { useGesture } from "@use-gesture/react";
 import React, { useEffect, useRef } from "react";
 import { animated, useSpring } from "@react-spring/three";
-import { useThree } from "react-three-fiber";
+
 import { Mesh, Plane, Vector3 } from "three";
 import { Node } from "../utils/Node";
 import { getGraphIndexes } from "../utils/getGraphIndexes";
 import RedFlag from "./generated/RedFlag";
 import { useGlobalStore } from "../global-stores/useGlobalStore";
+import { useThree } from "@react-three/fiber";
 
 interface TargetProps {
   floor: Plane;

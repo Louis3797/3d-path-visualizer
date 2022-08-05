@@ -1,7 +1,6 @@
 import { useGesture } from "@use-gesture/react";
 import React, { useEffect, useRef } from "react";
 import { animated, useSpring } from "@react-spring/three";
-import { useFrame, useLoader, useThree } from "react-three-fiber";
 import { AnimationMixer, Mesh, Plane, Vector3 } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 
@@ -9,6 +8,7 @@ import { Animations } from "../types";
 import { Node } from "../utils/Node";
 import { getGraphIndexes } from "../utils/getGraphIndexes";
 import { useGlobalStore } from "../global-stores/useGlobalStore";
+import { useThree, useLoader, useFrame } from "@react-three/fiber";
 
 interface CharacterProps {
   floor: Plane;

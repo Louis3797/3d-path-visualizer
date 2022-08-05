@@ -2156,10 +2156,10 @@
     utility-types "^3.10.0"
     zustand "^3.5.13"
 
-"@react-three/fiber@latest":
-  version "8.2.0"
-  resolved "https://registry.npmjs.org/@react-three/fiber/-/fiber-8.2.0.tgz"
-  integrity sha512-k9JZ7XrOplmzX3wPk1uVq0DBWzUBI8ydr0HhmgZvLp5sJ4c+DKljuTClNH1OIp5oXaHjhzP+QbSAGg+vH3bV1Q==
+"@react-three/fiber@^8.3.0":
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/@react-three/fiber/-/fiber-8.3.0.tgz#e0bcf8392696a92ecfdb4af97398181d4b4191f4"
+  integrity sha512-K7EHV7hUzgfK5CXeZ43A3TQaXVzqdAq6TA8NTSXgFJvDLS12WCqAKRt+evg9qOthlJsa6CnyuEsLGqSFUAmG/w==
   dependencies:
     "@babel/runtime" "^7.17.8"
     "@types/react-reconciler" "^0.26.7"
@@ -8764,13 +8764,6 @@ react-spring@^9.5.2:
     "@react-spring/web" "~9.5.2"
     "@react-spring/zdog" "~9.5.2"
 
-react-three-fiber@^6.0.13:
-  version "6.0.13"
-  resolved "https://registry.npmjs.org/react-three-fiber/-/react-three-fiber-6.0.13.tgz"
-  integrity sha512-uShQnkMVLvnzwf3YzY9mnzCnpmLpvTQkc0ycrtwk8fyjXmZt2695tLn3tufPF6uxq06UKJRKJcjCVCMXyUcEPQ==
-  dependencies:
-    "@react-three/fiber" latest
-
 react-transition-group@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.2.tgz#8b59a56f09ced7b55cbd53c36768b922890d5470"
@@ -9963,10 +9956,10 @@ three@0.122.0:
   resolved "https://registry.yarnpkg.com/three/-/three-0.122.0.tgz#bd9ed8a8820074856e8ba7b63fe0a65176e01aeb"
   integrity sha512-bgYMo0WdaQhf7DhLE8OSNN/rVFO5J4K1A2VeeKqoV4MjjuHjfCP6xLpg8Xedhns7NlEnN3sZ6VJROq19Qyl6Sg==
 
-three@^0.141.0:
-  version "0.141.0"
-  resolved "https://registry.npmjs.org/three/-/three-0.141.0.tgz"
-  integrity sha512-JaSDAPWuk4RTzG5BYRQm8YZbERUxTfTDVouWgHMisS2to4E5fotMS9F2zPFNOIJyEFTTQDDKPpsgZVThKU3pXA==
+three@^0.143.0:
+  version "0.143.0"
+  resolved "https://registry.yarnpkg.com/three/-/three-0.143.0.tgz#1455bca132cc2b20beb7f41d313e10c29e5ed9df"
+  integrity sha512-oKcAGYHhJ46TGEuHjodo2n6TY2R6lbvrkp+feKZxqsUL/WkH7GKKaeu6RHeyb2Xjfk2dPLRKLsOP0KM2VgT8Zg==
 
 throat@^6.0.1:
   version "6.0.1"

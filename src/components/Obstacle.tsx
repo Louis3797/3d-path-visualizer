@@ -1,6 +1,6 @@
+import { useLoader, useFrame } from "@react-three/fiber";
 import React, { useMemo, useRef, useState } from "react";
-import { useFrame, useLoader, Vector3 } from "react-three-fiber";
-import { Mesh } from "three";
+import { Mesh, Vector3 } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 interface ObstaclesProps {
   position: Vector3;
