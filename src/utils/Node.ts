@@ -9,6 +9,7 @@ export class Node {
   public isWall: boolean;
   public distance: number;
   public prevNode: Node | null;
+  public visited: boolean;
 
   constructor({
     x,
@@ -18,6 +19,7 @@ export class Node {
     isWall = false,
     distance = Infinity,
     prevNode = null,
+    visited = false,
   }: NodeProps) {
     this.x = x;
     this.z = z;
@@ -26,5 +28,6 @@ export class Node {
     this.isWall = isWall;
     this.distance = distance;
     this.prevNode = prevNode;
+    this.visited = visited;
   }
 }

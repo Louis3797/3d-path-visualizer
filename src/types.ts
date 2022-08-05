@@ -14,6 +14,7 @@ export type NodeProps = {
   isWall?: boolean;
   distance?: number;
   prevNode?: Node | null;
+  visited?: boolean;
 };
 
 export type GlobalState = {
