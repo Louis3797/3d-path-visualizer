@@ -10,6 +10,7 @@ export class Node {
   public distance: number;
   public prevNode: Node | null;
   public visited: boolean;
+  public instanceId: number;
 
   constructor({
     x,
@@ -20,6 +21,7 @@ export class Node {
     distance = Infinity,
     prevNode = null,
     visited = false,
+    instanceId,
   }: NodeProps) {
     this.x = x;
     this.z = z;
@@ -29,5 +31,6 @@ export class Node {
     this.distance = distance;
     this.prevNode = prevNode;
     this.visited = visited;
+    this.instanceId = instanceId;
   }
 }

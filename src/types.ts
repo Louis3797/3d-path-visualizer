@@ -15,6 +15,7 @@ export type NodeProps = {
   distance?: number;
   prevNode?: Node | null;
   visited?: boolean;
+  instanceId: number;
 };
 
 export type GlobalState = {
