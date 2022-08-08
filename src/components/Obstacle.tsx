@@ -5,6 +5,8 @@ import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 interface ObstaclesProps {
   position: Vector3;
 }
+
+// Todo material (models) out of this Component so that we doesnt load them everytime new
 const Obstacle: React.FC<ObstaclesProps> = ({ position }) => {
   const [
     obstacle1,
