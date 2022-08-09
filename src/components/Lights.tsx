@@ -3,12 +3,12 @@ import React from "react";
 const Lights: React.FC = () => {
   return (
     <group>
-      <hemisphereLight args={["#E4D8DC", "darkslategrey", 0.3]} />
+      <hemisphereLight args={["white", "darkslategrey", 0.3]} />
       <directionalLight
         castShadow
         position={[7, 15, 10]}
         intensity={2.5}
-        color="#FFE3E3"
+        color="#E8F9FD"
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
         shadow-camera-far={50}
