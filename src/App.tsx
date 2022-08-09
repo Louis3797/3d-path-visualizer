@@ -3,7 +3,7 @@ import {
   StyledEngineProvider,
   ThemeProvider,
 } from "@mui/material";
-import { OrbitControls, Sky, softShadows } from "@react-three/drei";
+import { OrbitControls, softShadows } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Suspense } from "react";
 
@@ -14,6 +14,7 @@ import {
   sRGBEncoding,
 } from "three";
 import Ground from "./components/Ground";
+import Lights from "./components/Lights";
 import Navbar from "./components/ui/Navbar";
 import { useGlobalStore } from "./global-stores/useGlobalStore";
 
@@ -34,7 +35,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <StyledEngineProvider injectFirst>
           <div
-            className="w-screen h-screen"
+            className="w-screen h-screen bg-slate-200"
             onDoubleClick={() => {
               if (isDragging === true) {
                 setDragging(false);
@@ -53,9 +54,8 @@ function App() {
                 gl.toneMapping = ACESFilmicToneMapping;
               }}
             >
-              <Sky />
               <OrbitControls enabled={!isDragging} />
-              <ambientLight intensity={0.6} castShadow color="#ffffff" />
+              {/* <ambientLight intensity={0.6} castShadow color="#ffffff" />
               <directionalLight
                 position={[15, 20, 15]}
                 castShadow
@@ -70,7 +70,8 @@ function App() {
                 shadow-camera-bottom={-30}
                 shadow-bias={-0.001}
                 color="#ffffff"
-              />
+              /> */}
+              <Lights />
               <Suspense fallback={null}>
                 <Ground />
               </Suspense>
