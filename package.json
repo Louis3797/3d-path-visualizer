@@ -12,7 +12,6 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
-    "@tweenjs/tween.js": "^18",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.13",
     "@types/react": "^18.0.0",
@@ -25,7 +24,6 @@
     "react-spring": "^9.5.2",
     "three": "^0.143.0",
     "typescript": "^4.4.2",
-    "uuid": "^8.3.2",
     "web-vitals": "^2.1.0",
     "zustand": "^4.0.0"
   },
