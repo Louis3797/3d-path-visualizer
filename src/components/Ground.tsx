@@ -1,9 +1,13 @@
-import { Plane } from "@react-three/drei";
-import React, { useRef } from "react";
+import { useSpring } from "react-spring";
+import { ThreeEvent } from "@react-three/fiber";
+import React, { useLayoutEffect, useRef } from "react";
 import {
+  Color,
   DoubleSide,
+  InstancedMesh,
+  Matrix4,
   Mesh,
-  Plane as ThreePlane,
+  Plane,
   PlaneBufferGeometry,
   Vector3,
 } from "three";
@@ -13,17 +17,26 @@ import { getGraphIndexes } from "../utils/getGraphIndexes";
 import Character from "./Character";
 import Obstacle from "./Obstacle";
 import Target from "./Target";
+import { animated } from "@react-spring/three";
 
 const Ground: React.FC = () => {
-  const floor: ThreePlane = new ThreePlane(new Vector3(0, -0.001, 0), 0);
+  // used for the raycaster
+  const floor: Plane = new Plane(new Vector3(0, -0.001, 0), 0);
+
+  const plane = new PlaneBufferGeometry(1, 1, 1, 1);
+  plane.rotateX(-Math.PI / 2);
+
+  // size of the grid plane
   const planeSize = 31;
+
   const { grid, setGrid, isDragging } = useGlobalStore((state) => ({
     grid: state.grid,
     setGrid: state.setGrid,
     isDragging: state.isDragging,
   }));
 
-  const ground = useRef<PlaneBufferGeometry>(null!);
+  // refs
+  const mesh = useRef<InstancedMesh>(null!);
   const ray = useRef<Mesh>(null!);
 
   /**
@@ -46,27 +59,86 @@ const Ground: React.FC = () => {
     setGrid(tempGraph); // We set a new graph every time, because otherwise we don't re-render
   };
 
+  const updateColor = (id: number) => {
+    api.start({
+      to: [
+        {
+          color: "#72FFFF",
+        },
+        {
+          color: "#00D7FF",
+        },
+        {
+          color: "#0096FF",
+        },
+        {
+          color: "#5800FF",
+        },
+      ],
+      from: {
+        color: "#ECECEC",
+      },
+      onChange: () => {
+        mesh.current.setColorAt(id, new Color().setStyle(spring.color.get()));
+        mesh.current.instanceColor!.needsUpdate = true;
+      },
+    });
+  };
+
+  useLayoutEffect(() => {
+    let i = 0;
+    const offset = -0;
+
+    const matrix = new Matrix4();
+
+    const color = new Color(0xececec);
+
+    for (let x = 0; x < planeSize; x++) {
+      for (let y = 0; y < planeSize; y++) {
+        matrix.setPosition(offset - x, 0, offset - y);
+
+        mesh.current.setMatrixAt(i, matrix);
+        mesh.current.setColorAt(i, color);
+
+        i++;
+      }
+
+      mesh.current.instanceColor!.needsUpdate = true;
+      mesh.current.instanceMatrix.needsUpdate = true;
+    }
+  }, []);
+
+  const [spring, api] = useSpring(() => ({
+    color: "#ECECEC",
+    config: { duration: 100 },
+  }));
+
   return (
     <>
       {/* Grid Helper */}
       <gridHelper args={[planeSize, planeSize]} receiveShadow />
-      {/* Ground Plane */}
-      <Plane
-        args={[planeSize, planeSize, planeSize, planeSize]}
-        {...floor}
-        position={[0, -0.001, 0]}
-        rotation={[-Math.PI / 2, 0, 0]}
+      {/* Grid */}
+      <animated.instancedMesh
+        ref={mesh}
         receiveShadow
-        ref={ground}
-        name="floor"
-        onClick={(e) => {
-          if (e.intersections[0].object.name === "floor") {
-            if (!isDragging) {
-              addBuilding(e.point);
-            }
+        args={[
+          null as unknown as PlaneBufferGeometry,
+          undefined,
+          Math.pow(planeSize, 2),
+        ]}
+        position={[15, -0.001, 15]}
+        onClick={(e: ThreeEvent<MouseEvent>) => {
+          e.stopPropagation();
+          if (!isDragging) {
+            addBuilding(e.point);
+          }
+
+          if (e.instanceId) {
+            updateColor(e.instanceId);
           }
         }}
-        onPointerMove={(e) => {
+        onPointerMove={(e: ThreeEvent<MouseEvent>) => {
+          e.stopPropagation();
           ray.current?.position.copy(
             new Vector3(Math.round(e.point.x), 0, Math.round(e.point.z))
               .floor()
@@ -74,23 +146,29 @@ const Ground: React.FC = () => {
           );
         }}
       >
-        <meshStandardMaterial
+        <planeBufferGeometry
+          args={[1, 1, 1, 1]}
+          {...floor}
+          attach="geometry"
+          {...plane}
+        />
+        <meshPhongMaterial
           side={DoubleSide}
-          color="#A2B5BB"
+          color="#ECECEC"
           attach="material"
         />
-      </Plane>
+      </animated.instancedMesh>
       {/* Mouse Pointer Plane */}
       <mesh position={[0, 0, 0]} rotation={[-Math.PI / 2, 0, 0]} ref={ray}>
         <planeGeometry args={[1, 1, 1, 1]} />
         <meshStandardMaterial
           side={DoubleSide}
-          color="#f0f0f0"
+          color="#F29191"
           attach="material"
         />
       </mesh>
       {/* Obstacles */}
-      <group>
+      <instancedMesh count={961}>
         {grid.map((obstacles) => {
           return obstacles.map((obstacle, idx) => {
             if (obstacle.isWall) {
@@ -104,7 +182,7 @@ const Ground: React.FC = () => {
             return null;
           });
         })}
-      </group>
+      </instancedMesh>
       {/* Character */}
       <Character floor={floor} />
       {/* Target */}
