@@ -1,6 +1,6 @@
 import { useSpring } from "react-spring";
-import { ThreeEvent } from "@react-three/fiber";
-import React, { useLayoutEffect, useRef } from "react";
+import { ThreeEvent, useFrame } from "@react-three/fiber";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import {
   Color,
   DoubleSide,
@@ -26,14 +26,19 @@ const Ground: React.FC = () => {
   const plane = new PlaneBufferGeometry(1, 1, 1, 1);
   plane.rotateX(-Math.PI / 2);
 
+  const [block, setblock] = useState(false);
+
   // size of the grid plane
   const planeSize = 31;
 
-  const { grid, setGrid, isDragging } = useGlobalStore((state) => ({
-    grid: state.grid,
-    setGrid: state.setGrid,
-    isDragging: state.isDragging,
-  }));
+  const { grid, setGrid, isDragging, nodesToAnimate } = useGlobalStore(
+    (state) => ({
+      grid: state.grid,
+      setGrid: state.setGrid,
+      isDragging: state.isDragging,
+      nodesToAnimate: state.nodesToAnimate,
+    })
+  );
 
   // refs
   const mesh = useRef<InstancedMesh>(null!);
@@ -63,20 +68,23 @@ const Ground: React.FC = () => {
     api.start({
       to: [
         {
-          color: "#72FFFF",
+          color: "#FFD36E",
         },
         {
-          color: "#00D7FF",
+          color: "#FFF56D",
         },
         {
-          color: "#0096FF",
+          color: "#99FFCD",
         },
         {
-          color: "#5800FF",
+          color: "#9FB4FF",
         },
       ],
       from: {
         color: "#ECECEC",
+      },
+      onRest: () => {
+        setblock(false);
       },
       onChange: () => {
         mesh.current.setColorAt(id, new Color().setStyle(spring.color.get()));
@@ -113,6 +121,16 @@ const Ground: React.FC = () => {
     config: { duration: 100 },
   }));
 
+  useFrame(() => {
+    if (nodesToAnimate.length && block) {
+      const node = nodesToAnimate.shift();
+      if (node) {
+        updateColor(node?.instanceId);
+        setblock(true);
+      }
+    }
+  });
+
   return (
     <>
       {/* Grid Helper */}
@@ -132,13 +150,10 @@ const Ground: React.FC = () => {
           if (!isDragging) {
             addBuilding(e.point);
           }
-
-          if (e.instanceId) {
-            updateColor(e.instanceId);
-          }
         }}
         onPointerMove={(e: ThreeEvent<MouseEvent>) => {
           e.stopPropagation();
+          // Move mouse pointer plane
           ray.current?.position.copy(
             new Vector3(Math.round(e.point.x), 0, Math.round(e.point.z))
               .floor()
