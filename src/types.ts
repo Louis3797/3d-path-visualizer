@@ -27,4 +27,5 @@ export type GlobalState = {
   setGrid: (newGrid: Node[][]) => void;
   isDragging: boolean;
   setDragging: (drag: boolean) => void;
+  nodesToAnimate: Node[];
 };
