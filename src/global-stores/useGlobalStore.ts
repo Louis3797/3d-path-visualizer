@@ -12,4 +12,5 @@ export const useGlobalStore = create<GlobalState>()((set, _get) => ({
   setSpeed: (newSpeed: string) => set({ speed: newSpeed }),
   setGrid: (newGrid: Node[][]) => set({ grid: newGrid }),
   setDragging: (drag: boolean) => set({ isDragging: drag }),
+  nodesToAnimate: [],
 }));
