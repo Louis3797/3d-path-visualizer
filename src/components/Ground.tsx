@@ -23,10 +23,13 @@ const Ground: React.FC = () => {
   // used for the raycaster
   const floor: Plane = new Plane(new Vector3(0, -0.001, 0), 0);
 
+  // Plane geometry for the ground
   const plane = new PlaneBufferGeometry(1, 1, 1, 1);
   plane.rotateX(-Math.PI / 2);
 
-  const [block, setblock] = useState(false);
+  // Is used to block the color change animation of a Plane
+  // if a other plane color is animated right now
+  const [blocked, setBlocked] = useState(false);
 
   // size of the grid plane
   const planeSize = 31;
@@ -40,8 +43,10 @@ const Ground: React.FC = () => {
     })
   );
 
-  // refs
+  // Ref for the ground
   const mesh = useRef<InstancedMesh>(null!);
+
+  // Ref for the mouse plane pointer
   const ray = useRef<Mesh>(null!);
 
   /**
@@ -64,6 +69,10 @@ const Ground: React.FC = () => {
     setGrid(tempGraph); // We set a new graph every time, because otherwise we don't re-render
   };
 
+  /**
+   * Updates the color of a plane
+   * @param id
+   */
   const updateColor = (id: number) => {
     api.start({
       to: [
@@ -84,7 +93,7 @@ const Ground: React.FC = () => {
         color: "#ECECEC",
       },
       onRest: () => {
-        setblock(false);
+        setBlocked(false);
       },
       onChange: () => {
         mesh.current.setColorAt(id, new Color().setStyle(spring.color.get()));
@@ -122,11 +131,11 @@ const Ground: React.FC = () => {
   }));
 
   useFrame(() => {
-    if (nodesToAnimate.length && block) {
+    if (nodesToAnimate.length && blocked) {
       const node = nodesToAnimate.shift();
       if (node) {
         updateColor(node?.instanceId);
-        setblock(true);
+        setBlocked(true);
       }
     }
   });
